@@ -1,5 +1,5 @@
 from flask import Flask, render_template, url_for
-from main import app
+from mainApp import app
 
 @app.route("/")
 @app.route("/home")
