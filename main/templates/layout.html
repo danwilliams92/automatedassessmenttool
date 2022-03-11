@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel=stylesheet type=text/css href="{{ url_for('static',filename='style.css')}}">
+<title>Automated Assessment Tool</title>
+</head>
+<body>
+    <nav><a href="{{ url_for('home') }}">Home</a>&nbsp
+    </nav>
+<div id="header">
+</div>
+<div id="content">
+{% block content %}
+
+{% endblock %}
+</div>
+</body>
+</html>
