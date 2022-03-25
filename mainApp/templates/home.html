@@ -1,4 +1,14 @@
 {% extends "layout.html" %}
 {% block content %}
 <h1>Hello, World!</h1>
+{% for question in type1questions %}
+    <p>{{ question.id }}</p>    
+    <p>{{ question.question }}</a></p>
+    <p>{{ question.answer_options }}</p>
+    <p>{{ question.correct_answer }}</p>
+    <p>{{ question.answer_feedback }}</p>
+    <p>{{ question.question_tags }}</p>
+
+{% endfor %}
+<a href="{{ url_for('add_question_type1') }}">Add multiple choice question</a>
 {% endblock content %}
