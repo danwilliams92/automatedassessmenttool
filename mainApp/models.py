@@ -14,6 +14,7 @@ class QuestionTypeOne(db.Model):
 
 class QuestionType2(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    questionType = db.Column(db.Integer, nullable= False)
     name = db.Column(db.Text, nullable=False)
     shortDescription = db.Column(db.Text, nullable=False)
     question = db.Column(db.Text, nullable=False)
