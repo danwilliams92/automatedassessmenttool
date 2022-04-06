@@ -10,5 +10,6 @@
     <p>{{ question.question_tags }}</p>
 
 {% endfor %}
+<a href="{{ url_for('addaquestion') }}">Add a question</a>
 <a href="{{ url_for('add_question_type1') }}">Add multiple choice question</a>
 {% endblock content %}

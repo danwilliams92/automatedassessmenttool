@@ -22,4 +22,4 @@ class AddQuestionType2Form(FlaskForm):
   submit = SubmitField('Submit question')
 
 class selectQuestionTypeForm(FlaskForm):
-  type = SelectField('Select the type of question you wish to add', choices=['Multiple Choice','Quetsion and response'])
+  type = SelectField('Select the type of question you wish to add', choices=['Multiple Choice','Question and response'])
