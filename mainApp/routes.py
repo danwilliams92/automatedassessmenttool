@@ -101,3 +101,14 @@ def edit_type_one_question(id):
     form.answer_feedback.data = type_one_question.answer_feedback
     
     return render_template('edit_type_one_question.html',title='Edit Multiple Choice Question', form=form, type_one_question=type_one_question)
+
+@app.route("/delete_type_one_question/<id>")
+def delete_type_one_question(id):
+    type_one_question = QuestionTypeOne.query.filter_by(id=id).first()
+    if not type_one_question:
+        flash("Question does not exist", category="error")
+    else:
+        db.session.delete(type_one_question)
+        db.session.commit()
+        flash("Question deleted", category="success")
+    return redirect(url_for('home'))
