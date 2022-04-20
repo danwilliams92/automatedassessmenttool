@@ -1,0 +1,8 @@
+{% extends "layout.html" %}
+{% block content %}
+<h1>Add a question!</h1>
+<form method="POST">
+    {{ form.csrf_token }}
+    <p id="type_selection">{{ form.type }}</p>
+</form>
+{% endblock content %}
