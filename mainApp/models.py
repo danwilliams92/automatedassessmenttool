@@ -1,4 +1,9 @@
 from mainApp import db
+"""
+class Assessment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    type_one_questions = db.relationship('QuestionTypeOne', backref='assessment', passive_deletes=True)
+"""
 
 class QuestionTypeOne(db.Model):
     id = db.Column(db.Integer, primary_key=True)

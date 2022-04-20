@@ -2,13 +2,17 @@
 {% block content %}
 <h1>Hello, World!</h1>
 {% for question in type1questions %}
-    <p>{{ question.id }}</p>    
-    <p>{{ question.question }}</a></p>
-    <p>{{ question.answer_options }}</p>
-    <p>{{ question.correct_answer }}</p>
-    <p>{{ question.answer_feedback }}</p>
-    <p>{{ question.question_tags }}</p>
+    <div class="question-container"><p>Question Number: {{ question.id }}<br>    
+    Question: {{ question.question }}<br>
+    Answer Options: {{ question.answer_options }}<br>
+    Correct Answer: {{ question.correct_answer }}<br>
+    Applicable feedback: {{ question.answer_feedback }}<br>
+    Question tags: {{ question.question_tags }}<br>
+    Marks available for question: {{ question.marks_available }}</p>
+    <a href="/delete_type_one_question/{{question.id}}"><button class="delete-question-button">Delete</button></a>
+    <a href="/edit_type_one_question/{{question.id}}"><button class="edit-question-button">Edit</button></a>
 
+</div>
 {% endfor %}
 <a href="{{ url_for('addaquestion') }}">Add a question</a>
 <a href="{{ url_for('add_question_type1') }}">Add multiple choice question</a>
