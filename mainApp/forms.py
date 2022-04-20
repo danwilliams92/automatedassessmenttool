@@ -9,4 +9,4 @@ class AddQuestionType1Form(FlaskForm):
   marks_available = IntegerField('Marks available for question', validators=[DataRequired()])
   question_tags = StringField('Relevant question tags', validators=[DataRequired()])
   answer_feedback = TextAreaField('Feedback to provide with correct answer', validators=[DataRequired()])
-  add_question = SubmitField('Add question to assessment')
+  add_question = SubmitField('Add question')

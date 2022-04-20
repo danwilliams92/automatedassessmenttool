@@ -9,8 +9,10 @@
     Applicable feedback: {{ question.answer_feedback }}<br>
     Question tags: {{ question.question_tags }}<br>
     Marks available for question: {{ question.marks_available }}</p>
-    <a href="/delete_type_one_question/{{question.id}}"><button class="delete-question-button">Delete Question</button></a>
-        </div>
+    <a href="/delete_type_one_question/{{question.id}}"><button class="delete-question-button">Delete</button></a>
+    <a href="/edit_type_one_question/{{question.id}}"><button class="edit-question-button">Edit</button></a>
+
+</div>
 {% endfor %}
 <a href="{{ url_for('add_question_type1') }}">Add multiple choice question</a>
 {% endblock content %}

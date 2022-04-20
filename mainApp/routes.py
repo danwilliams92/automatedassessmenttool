@@ -30,3 +30,27 @@ def delete_type_one_question(id):
         db.session.commit()
         flash("Question deleted", category="success")
     return redirect(url_for('home'))
+
+#update so that this actually changes the database row
+@app.route("/edit_type_one_question/<id>", methods=['POST', 'GET'])
+def edit_type_one_question(id):
+    type_one_question = QuestionTypeOne.query.filter_by(id=id).first()
+    form = AddQuestionType1Form()
+    if form.validate_on_submit():
+        type_one_question.question = form.question.data
+        type_one_question.answer_options = form.answer_options.data
+        type_one_question.correct_answer = form.correct_answer.data
+        type_one_question.marks_available = form.marks_available.data
+        type_one_question.question_tags = form.question_tags.data
+        db.session.add(type_one_question)
+        db.session.commit()
+        flash('Question updated.')
+        return redirect(url_for('home'))
+    form.question.data = type_one_question.question 
+    form.answer_options.data = type_one_question.answer_options 
+    form.correct_answer.data = type_one_question.correct_answer
+    form.marks_available.data = type_one_question.marks_available
+    form.question_tags.data = type_one_question.question_tags
+    form.answer_feedback.data = type_one_question.answer_feedback
+    
+    return render_template('edit_type_one_question.html',title='Edit Multiple Choice Question', form=form, type_one_question=type_one_question)
