@@ -13,7 +13,17 @@ def home():
 def add_question_type1():
     form = AddQuestionType1Form()
     if form.validate_on_submit():
-        question = QuestionTypeOne(question=form.question.data, answer_options=form.answer_options.data, correct_answer=form.correct_answer.data, marks_available=form.marks_available.data, question_tags=form.question_tags.data, answer_feedback=form.answer_feedback.data)
+        form_answer_options = form.answer_options.data.split(',')
+        form_answer_option_1 = form_answer_options[0]
+        form_answer_option_2 = form_answer_options[1]
+        form_answer_option_3 = form_answer_options[2]
+
+        form_question_tags = form.question_tags.data.split(',')
+        form_question_tag_1 = form_question_tags[0]
+        form_question_tag_2 = form_question_tags[1]
+        form_question_tag_3 = form_question_tags[2]
+
+        question = QuestionTypeOne(question=form.question.data, answer_option_1=form_answer_option_1, answer_option_2=form_answer_option_2, answer_option_3=form_answer_option_3, correct_answer=form.correct_answer.data, marks_available=form.marks_available.data, question_tag_1=form_question_tag_1, question_tag_2=form_question_tag_2, question_tag_3=form_question_tag_3, correct_answer_feedback=form.correct_answer_feedback.data, incorrect_answer_feedback=form.incorrect_answer_feedback.data, feedforward_comments=form.feedforward_comments.data)
         db.session.add(question)
         db.session.commit()
         flash('Question added.')
@@ -84,21 +94,41 @@ def edit_type_one_question(id):
     type_one_question = QuestionTypeOne.query.filter_by(id=id).first()
     form = AddQuestionType1Form()
     if form.validate_on_submit():
+        form_answer_options = form.answer_options.data.split(",")
+        form_answer_option_1 = form_answer_options[0]
+        form_answer_option_2 = form_answer_options[1]
+        form_answer_option_3 = form_answer_options[2]
+
+        form_question_tags = form.question_tags.data.split(",")
+        form_question_tag_1 = form_question_tags[0]
+        form_question_tag_2 = form_question_tags[1]
+        form_question_tag_3 = form_question_tags[2]
+        
         type_one_question.question = form.question.data
-        type_one_question.answer_options = form.answer_options.data
+        type_one_question.answer_option_1 = form_answer_option_1
+        type_one_question.answer_option_2 = form_answer_option_2
+        type_one_question.answer_option_3 = form_answer_option_3
         type_one_question.correct_answer = form.correct_answer.data
         type_one_question.marks_available = form.marks_available.data
-        type_one_question.question_tags = form.question_tags.data
+        type_one_question.question_tag_1 = form_question_tag_1
+        type_one_question.question_tag_2 = form_question_tag_2
+        type_one_question.question_tag_3 = form_question_tag_3
+        type_one_question.correct_answer_feedback = form.correct_answer_feedback.data
+        type_one_question.incorrect_answer_feedback = form.incorrect_answer_feedback.data
+        type_one_question.feedforward_comments = form.feedforward_comments.data
         db.session.add(type_one_question)
         db.session.commit()
         flash('Question updated.')
         return redirect(url_for('home'))
     form.question.data = type_one_question.question 
-    form.answer_options.data = type_one_question.answer_options 
+    form.answer_options.data = f"{type_one_question.answer_option_1}, {type_one_question.answer_option_2}, {type_one_question.answer_option_3}"
     form.correct_answer.data = type_one_question.correct_answer
     form.marks_available.data = type_one_question.marks_available
-    form.question_tags.data = type_one_question.question_tags
-    form.answer_feedback.data = type_one_question.answer_feedback
+    form.question_tags.data = f"{type_one_question.question_tag_1}, {type_one_question.question_tag_2}, {type_one_question.question_tag_3}"
+    form.correct_answer_feedback.data = type_one_question.correct_answer_feedback
+    form.incorrect_answer_feedback.data = type_one_question.incorrect_answer_feedback
+    form.feedforward_comments.data = type_one_question.feedforward_comments
+
     
     return render_template('edit_type_one_question.html',title='Edit Multiple Choice Question', form=form, type_one_question=type_one_question)
 

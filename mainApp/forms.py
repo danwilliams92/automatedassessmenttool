@@ -4,11 +4,13 @@ from wtforms.validators import DataRequired, ValidationError
 
 class AddQuestionType1Form(FlaskForm):
   question = StringField('Question',validators=[DataRequired()])
-  answer_options = StringField('Answer options',validators=[DataRequired()])
+  answer_options = StringField('Answer options (please give three options, separated by a comma)',validators=[DataRequired()])
   correct_answer = StringField('Correct answer',validators=[DataRequired()])
   marks_available = IntegerField('Marks available for question', validators=[DataRequired()])
-  question_tags = StringField('Relevant question tags', validators=[DataRequired()])
-  answer_feedback = TextAreaField('Feedback to provide with correct answer', validators=[DataRequired()])
+  question_tags = StringField('Relevant question tags (please give three category tags, separated by a comma)', validators=[DataRequired()])
+  correct_answer_feedback = TextAreaField('Feedback to provide with correct answer', validators=[DataRequired()])
+  incorrect_answer_feedback = TextAreaField('Feedback to provide with incorrect answer', validators=[DataRequired()])
+  feedforward_comments = TextAreaField('Feedforward comments for student to continue/strengthen learning', validators=[DataRequired()])
   add_question = SubmitField('Add question to assessment')
 
 class AddQuestionType2Form(FlaskForm):
