@@ -1,13 +1,21 @@
 from flask import Flask, render_template, url_for, redirect, flash
 from mainApp import app, db
-from mainApp.forms import AddQuestionType1Form, AddQuestionType2Form, selectQuestionTypeForm
+from mainApp.forms import AddQuestionType1Form, AddQuestionType2Form
 from mainApp.models import QuestionTypeOne, QuestionType2
 
 @app.route("/")
 @app.route("/home")
 def home():
+    return render_template('home.html',title='Home')
+
+@app.route("/staff")
+def staff():
     type1questions=QuestionTypeOne.query.all()
-    return render_template('home.html', title='Home', type1questions=type1questions)
+    return render_template('staff.html', title='Staff', type1questions=type1questions)
+
+@app.route("/student")
+def student():
+    return render_template('student.html',title='Student')    
 
 @app.route("/add_question_type1", methods=['POST', 'GET'])
 def add_question_type1():
@@ -27,7 +35,7 @@ def add_question_type1():
         db.session.add(question)
         db.session.commit()
         flash('Question added.')
-        return redirect(url_for('home'))
+        return redirect(url_for('staff'))
     return render_template('add_question_type1.html',title='Add Multiple Choice Question', form=form)
 
 @app.route("/add_text_question", methods=['GET','POST'])
@@ -37,13 +45,12 @@ def addtextquestion():
         question2 = QuestionType2(questionType = 2, name = form.name.data, shortDescription = form.shortDescription.data, question = form.question.data, answer = form.answer.data, correctFeedback = form.correctFeedback.data, incorrectFeedback = form.incorrectFeedback.data, marksAwarded = form.marksAwarded.data)
         db.session.add(question2)
         db.session.commit()
-        return redirect(url_for('home'))
+        return redirect(url_for('staff'))
     return render_template('addq2.html', title = 'Add Text Question', form=form)
 
-@app.route("/addaquestion", methods=['GET','POST'])
+@app.route("/addaquestion")
 def addaquestion():
-    form = selectQuestionTypeForm()
-    return render_template('questiontype.html', form=form)
+    return render_template('questiontype.html')
 
 @app.route('/temp_question_2_list')
 def question2List():
