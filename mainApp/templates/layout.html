@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8">
 <link rel=stylesheet type=text/css href="{{ url_for('static',filename='style.css')}}">
-<title>Automated Assessment Tool</title>
+<title>Test MAATe</title>
 </head>
 <body>
+<header id="nav-bar">
+    <h1 id="nav-title">Test MAATe</h1>
     <nav><a href="{{ url_for('home') }}">Home</a>&nbsp
-        <a href="{{ url_for('addtextquestion') }}">Add question 2</a>
     </nav>
-<div id="header">
-</div>
+</header>
 <div id="content">
 {% block content %}
 
