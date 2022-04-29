@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, IntegerField, TextAreaField, SelectField
+from wtforms import StringField, SubmitField, IntegerField, TextAreaField
 from wtforms.validators import DataRequired, ValidationError
 
 class AddQuestionType1Form(FlaskForm):
@@ -22,6 +22,3 @@ class AddQuestionType2Form(FlaskForm):
   incorrectFeedback = TextAreaField('Please input instant feedback for an incorrect answer', validators=[DataRequired()])
   marksAwarded = IntegerField('Please input the points awarded for a correct answer', validators=[DataRequired()])
   submit = SubmitField('Submit question')
-
-class selectQuestionTypeForm(FlaskForm):
-  type = SelectField('Select the type of question you wish to add', choices=['Multiple Choice','Question and response'])

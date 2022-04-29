@@ -1,6 +1,6 @@
 from flask import Flask, render_template, url_for, redirect, flash
 from mainApp import app, db
-from mainApp.forms import AddQuestionType1Form, AddQuestionType2Form, selectQuestionTypeForm
+from mainApp.forms import AddQuestionType1Form, AddQuestionType2Form
 from mainApp.models import QuestionTypeOne, QuestionType2
 
 @app.route("/")
