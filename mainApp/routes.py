@@ -1,7 +1,8 @@
 from flask import Flask, render_template, url_for, redirect, flash
 from mainApp import app, db
-from mainApp.forms import AddQuestionType1Form, AddQuestionType2Form
-from mainApp.models import QuestionTypeOne, QuestionType2
+from mainApp.forms import AddQuestionType1Form, AddQuestionType2Form, Assesment
+from mainApp.models import QuestionTypeOne, QuestionType2, Mark
+from sqlalchemy.sql.expression import func, select
 
 @app.route("/")
 @app.route("/home")
@@ -149,3 +150,32 @@ def delete_type_one_question(id):
         db.session.commit()
         flash("Question deleted", category="success")
     return redirect(url_for('home'))
+
+
+@app.route("/assesment/<id>",methods=['GET','POST'])
+def assesment(id):
+  form = Assesment()
+  type1questionsass=QuestionTypeOne.query.get(id) #queries questions from QuestionTypeOne for demonstration purposes
+  correctAnswer = 0 #will be fetched from assesment creation system
+  numberOfQuestions=10 #placeholder
+  if form.validate_on_submit():
+      if Assesment.answer == correctAnswer:
+          flash('Question Answered Correctly')
+          return redirect(url_for('student'))
+      elif Assesment.answer == correctAnswer and id == numberOfQuestions:
+          flash('Question Answered Correctly')
+          #db.session.add()#does not work yet
+          #db.session.commit()
+          return redirect(url_for('student'))
+      elif id == numberOfQuestions:
+          flash('Question Answered Incorrectly')
+          #db.session.add()#does not work yet
+          #db.session.commit()
+          return redirect(url_for('student'))
+      else:
+          flash('Question Answered Incorrectly (needs assesment creation model to detect correct answers)')
+          flash('Feedback:')
+          return redirect(url_for('student')) #will not redirect to this url when there are assesments
+
+  return render_template('assesment.html', title='Assesment', type1questionsass=type1questionsass, form=form, id=id)
+         

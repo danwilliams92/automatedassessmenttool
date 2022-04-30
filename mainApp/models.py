@@ -31,3 +31,9 @@ class QuestionType2(db.Model):
 
     def __repr__(self):
         return f"QuestionType2('{self.name}', '{self.shortDescription}', '{self.question}', '{self.answer}' , '{self.correctFeedback}','{self.incorrectFeedback}','{self.marksAwarded}')"
+
+
+
+class Mark(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    mark = db.Column(db.Integer, nullable= False)
