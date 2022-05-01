@@ -1,9 +1,10 @@
 {% extends "layout.html" %}
 {% block content %}
 <h1>Welcome to the assesment</h1>
-Currently draws questions from question type one for demonstration purposes. (change id in url to browse questions)
+Currently draws questions from question type one for demonstration purposes.
 <div class="question-container">
-<p>Q{{ type1questionsass.id }}<br>    
+<p>Q{{ type1questionsass.id }}<br>   
+    
 Marks: {{ type1questionsass.marks_available }}<br>
 <h2>Question: {{ type1questionsass.question }}</h2><br>
 <h3>Answers: {{ type1questionsass.answer_option_1 }} , {{ type1questionsass.answer_option_2}}, {{ type1questionsass.answer_option_3 }} </h3><br>
@@ -18,5 +19,5 @@ Marks: {{ type1questionsass.marks_available }}<br>
     {% endfor %}
     <input id="submitbut" type="submit" value="submit">
     </form>
-
+    <h2><a href="{{ '/assesment/%s'%nextID }}">Next Question</a></h2>
 {% endblock content %}

@@ -155,27 +155,32 @@ def delete_type_one_question(id):
 @app.route("/assesment/<id>",methods=['GET','POST'])
 def assesment(id):
   form = Assesment()
+  nextID = int(id)+1
   type1questionsass=QuestionTypeOne.query.get(id) #queries questions from QuestionTypeOne for demonstration purposes
+  CorrectFeedback = str(db.session.query(QuestionTypeOne.correct_answer_feedback).filter_by(id=id).first())    
+  IncorrectFeedback = str(db.session.query(QuestionTypeOne.incorrect_answer_feedback).filter_by(id=id).first())
   correctAnswer = 0 #will be fetched from assesment creation system
-  numberOfQuestions=10 #placeholder
-  if form.validate_on_submit():
+  numberOfQuestions=10 #placeholder    
+  print (nextID)
+  if form.validate_on_submit():   
       if Assesment.answer == correctAnswer:
           flash('Question Answered Correctly')
-          return redirect(url_for('student'))
       elif Assesment.answer == correctAnswer and id == numberOfQuestions:
           flash('Question Answered Correctly')
+          flash('Feedback:')
+          flash(CorrectFeedback)
           #db.session.add()#does not work yet
           #db.session.commit()
-          return redirect(url_for('student'))
       elif id == numberOfQuestions:
           flash('Question Answered Incorrectly')
           #db.session.add()#does not work yet
           #db.session.commit()
-          return redirect(url_for('student'))
       else:
           flash('Question Answered Incorrectly (needs assesment creation model to detect correct answers)')
           flash('Feedback:')
-          return redirect(url_for('student')) #will not redirect to this url when there are assesments
+          flash(IncorrectFeedback)
+  return render_template('assesment.html', title='Assesment', type1questionsass=type1questionsass, form=form, id=id, nextID=nextID, CorrectFeedback=CorrectFeedback, IncorrectFeedback=IncorrectFeedback)
 
-  return render_template('assesment.html', title='Assesment', type1questionsass=type1questionsass, form=form, id=id)
-         
+@app.route("/feedback")
+def feedback():
+    return render_template('feedback.html',title='Feedback')
