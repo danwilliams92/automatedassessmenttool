@@ -167,9 +167,9 @@ def assesment(id):
   numberOfQuestions=10 #placeholder    
   print (nextID)
   if form.validate_on_submit():   
-      if Assesment.answer in correctAnswer:
+      if Assesment.answer == correctAnswer:
           flash('Question Answered Correctly')
-      elif Assesment.answer in correctAnswer and id == numberOfQuestions:
+      elif Assesment.answer == correctAnswer and id == numberOfQuestions:
           flash('Question Answered Correctly')
           flash('Feedback:')
           flash(CorrectFeedback)
