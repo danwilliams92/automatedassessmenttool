@@ -1,4 +1,5 @@
 from mainApp import db
+from datetime import date,datetime,timedelta
 
 class QuestionTypeOne(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -38,3 +39,13 @@ class Mark(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     mark = db.Column(db.Integer, nullable= False)
     studentID = db.Column(db.Integer, nullable= False)
+
+# Assessment
+class Asessment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    question_type_one = db.Column(db.Integer,db.ForeignKey('questiontypeone.id'))
+    question_type_two = db.Column(db.Integer,db.ForeignKey('questiontype2.id'))
+    assessment_title = db.Column(db.Integer,nullable=False)
+    assessment_difficulty = db.Column(db.Integer,nullable=False) 
+    assessment_type = db.Column(db.Integer,nullable=False)
+    date_created_on = db.Column(db.DateTime,default=datetime.now)

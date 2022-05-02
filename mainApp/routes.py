@@ -1,7 +1,8 @@
 from flask import Flask, render_template, url_for, redirect, flash, send_file
 from mainApp import app, db
+from mainApp.forms import AddQuestionType1Form, AddQuestionType2Form,AssessmentForm
 from mainApp.forms import AddQuestionType1Form, AddQuestionType2Form, Assesment
-from mainApp.models import QuestionTypeOne, QuestionType2, Mark
+from mainApp.models import QuestionTypeOne, QuestionType2, Mark, Asessment
 from sqlalchemy.sql.expression import func, select
 from openpyxl import load_workbook
 
@@ -213,3 +214,63 @@ def download_image ():
 def download_table ():
     path = "data2.xlsx"
     return send_file(path, as_attachment=True)
+
+# assessment
+
+@app.route("/assessment_create", methods=["GET","POST"])
+def assessment_create():
+    form = AssessmentForm()
+    if form.validate_on_submit():
+        title = form.assessment_title.data
+        kind =  int(form.assessment_type.data)
+        difficulty = int(form.assessment_difficulty.data)
+        model = Asessment(assessment_title=title,assessment_difficulty=difficulty,assessment_type=kind)
+        db.session.add(model)
+        db.session.commit()
+        flash("assessment created successfuly")
+        return redirect(url_for('assessment_main'))
+    return render_template('assessment.html',form=form)
+
+
+
+@app.route("/main",methods=["GET","POST"])
+def assessment_main():
+    ass = Asessment.query.all()
+    return render_template("dash.html",ass=ass)
+
+@app.route('/assessment_view/<int:id>',methods=["GET","POST"])
+def assessment_view(id):
+    model = Asessment.query.filter_by(id=id).first()
+    q_model_1 = QuestionTypeOne.query.all()
+    q_model_2 = QuestionType2.query.all()
+    questions = []
+
+
+    if model.assessment_type == 0:
+        questions.append(q_model_1)
+    elif model.assessment_type == 1:
+        questions.append(q_model_2)
+
+    print(questions)
+
+    return render_template("view.html",model=model)
+
+@app.route("/assessment_edit/<int:id>",methods=["GET","POST"])
+def assessment_edit(id):
+    
+    model = Asessment.query.filter_by(id=id).first()
+    form = AssessmentForm(obj=model)
+    if form.validate_on_submit():
+        form.populate_obj(model)
+        db.session.add(model)
+        db.session.commit()
+        return redirect(url_for('assessment_main'))
+    return render_template("assessment.html",form=form) 
+
+
+@app.route('/assessment_delete/<int:id>',methods=["GET","POST"])
+def assessment_delete(id):
+    model = Asessment.query.filter_by(id=id).first()
+    db.session.delete(model)
+    db.session.commit()
+    return "<h1> Successfully Deleted </h1>"
