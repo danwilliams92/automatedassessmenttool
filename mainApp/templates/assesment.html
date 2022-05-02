@@ -8,16 +8,17 @@ Currently draws questions from question type one for demonstration purposes.
 Marks: {{ type1questionsass.marks_available }}<br>
 <h2>Question: {{ type1questionsass.question }}</h2><br>
 <h3>Answers: {{ type1questionsass.answer_option_1 }} , {{ type1questionsass.answer_option_2}}, {{ type1questionsass.answer_option_3 }} </h3><br>
-</div>
 <form id="Assesment" method="POST" action="">
     {{ form.csrf_token }}
     {% for subfield in form.answer %}
     <p>
         {{ subfield }}
-        {{ subfield.label }}
     </p>
     {% endfor %}
     <input id="submitbut" type="submit" value="submit">
     </form>
-    <h2><a href="{{ '/assesment/%s'%nextID }}">Next Question</a></h2>
+    </div
+
+<h2><a href="{{ '/assesment/%s'%prevID }}">Previous Question</a>
+<a href="{{ '/assesment/%s'%nextID }}">Next Question</a></h2>
 {% endblock content %}

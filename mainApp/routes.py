@@ -155,6 +155,10 @@ def delete_type_one_question(id):
 @app.route("/assesment/<id>",methods=['GET','POST'])
 def assesment(id):
   form = Assesment()
+  if id == 0:
+      return redirect('assesment/1')
+  prevID = int(id)-1
+  nextID = int(id)+1
   nextID = int(id)+1
   type1questionsass=QuestionTypeOne.query.get(id) #queries questions from QuestionTypeOne for demonstration purposes
   CorrectFeedback = str(db.session.query(QuestionTypeOne.correct_answer_feedback).filter_by(id=id).first())    
@@ -163,9 +167,9 @@ def assesment(id):
   numberOfQuestions=10 #placeholder    
   print (nextID)
   if form.validate_on_submit():   
-      if Assesment.answer == correctAnswer:
+      if Assesment.answer in correctAnswer:
           flash('Question Answered Correctly')
-      elif Assesment.answer == correctAnswer and id == numberOfQuestions:
+      elif Assesment.answer in correctAnswer and id == numberOfQuestions:
           flash('Question Answered Correctly')
           flash('Feedback:')
           flash(CorrectFeedback)
@@ -179,7 +183,7 @@ def assesment(id):
           flash('Question Answered Incorrectly (needs assesment creation model to detect correct answers)')
           flash('Feedback:')
           flash(IncorrectFeedback)
-  return render_template('assesment.html', title='Assesment', type1questionsass=type1questionsass, form=form, id=id, nextID=nextID, CorrectFeedback=CorrectFeedback, IncorrectFeedback=IncorrectFeedback)
+  return render_template('assesment.html', title='Assesment', type1questionsass=type1questionsass, form=form, id=id, nextID=nextID, prevID=prevID, CorrectFeedback=CorrectFeedback, IncorrectFeedback=IncorrectFeedback)
 
 @app.route("/feedback")
 def feedback():

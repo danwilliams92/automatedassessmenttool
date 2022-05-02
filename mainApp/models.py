@@ -37,3 +37,4 @@ class QuestionType2(db.Model):
 class Mark(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     mark = db.Column(db.Integer, nullable= False)
+    studentID = db.Column(db.Integer, nullable= False)
