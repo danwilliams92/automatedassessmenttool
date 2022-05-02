@@ -185,6 +185,11 @@ def assesment(id):
           flash(IncorrectFeedback)
   return render_template('assesment.html', title='Assesment', type1questionsass=type1questionsass, form=form, id=id, nextID=nextID, prevID=prevID, CorrectFeedback=CorrectFeedback, IncorrectFeedback=IncorrectFeedback)
 
-@app.route("/feedback")
+@app.route("/assesmentfinished")
 def feedback():
     return render_template('feedback.html',title='Feedback')
+
+
+@app.route("/taketest")
+def taketest():
+    return render_template('taketest.html',title='Take Test')
