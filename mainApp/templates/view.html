@@ -1,15 +1,17 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title></title>
-</head>
-<body>
-
-
-	{{ model.assessment_title }}
-
-
-</body>
-</html>
+{% extends "layout.html" %}
+{% block content %}
+	<h1>{{ model.assessment_title }}</h1>
+	{% if assessment.questiontypetwo %}
+		{% for q in assessment.questiontypetwo %}
+			<a href="{{ url_for('questionType2', question_id=q.id) }}"><h2>{{ q.name }} &nbsp</h2></a>
+			<p> <a href="{{ url_for('edit_question_2', question_id=q.id) }}">Edit</a> |<a href="{{ url_for('delete_question_type_2', question_id=q.id) }}"> Delete</a></p>
+		{% endfor %}
+	{% endif %}
+	{% if assessment.questiontypeone %}
+		{% for i in assessment.questiontypeone %}
+			<a href="{{ url_for('questionType1', question_id=i.id) }}"><h2>{{ i.id }} &nbsp</h2></a>
+			<p><a href="{{ url_for('edit_type_one_question', id=i.id) }}">Edit</a> |<a href="{{ url_for('delete_type_one_question', id=i.id) }}"> Delete</a></p>
+		{% endfor %}
+	{% endif %}
+	<p><a href="{{ url_for('addaquestion', assessment_id=model.id) }}">Add a question</a></p>
+{% endblock %}

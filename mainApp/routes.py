@@ -20,8 +20,9 @@ def staff():
 def student():
     return render_template('student.html',title='Student')    
 
-@app.route("/add_question_type1", methods=['POST', 'GET'])
-def add_question_type1():
+@app.route("/assessment_view/<int:assessment_id>/add_question_type1", methods=['POST', 'GET'])
+def add_question_type1(assessment_id):
+    assessment = Asessment.query.get_or_404(assessment_id)
     form = AddQuestionType1Form()
     if form.validate_on_submit():
         form_answer_options = form.answer_options.data.split(',')
@@ -34,26 +35,28 @@ def add_question_type1():
         form_question_tag_2 = form_question_tags[1]
         form_question_tag_3 = form_question_tags[2]
 
-        question = QuestionTypeOne(question=form.question.data, answer_option_1=form_answer_option_1, answer_option_2=form_answer_option_2, answer_option_3=form_answer_option_3, correct_answer=form.correct_answer.data, marks_available=form.marks_available.data, question_tag_1=form_question_tag_1, question_tag_2=form_question_tag_2, question_tag_3=form_question_tag_3, correct_answer_feedback=form.correct_answer_feedback.data, incorrect_answer_feedback=form.incorrect_answer_feedback.data, feedforward_comments=form.feedforward_comments.data)
+        question = QuestionTypeOne(question=form.question.data, answer_option_1=form_answer_option_1, answer_option_2=form_answer_option_2, answer_option_3=form_answer_option_3, correct_answer=form.correct_answer.data, marks_available=form.marks_available.data, question_tag_1=form_question_tag_1, question_tag_2=form_question_tag_2, question_tag_3=form_question_tag_3, correct_answer_feedback=form.correct_answer_feedback.data, incorrect_answer_feedback=form.incorrect_answer_feedback.data, feedforward_comments=form.feedforward_comments.data, assessmentID=assessment_id)
         db.session.add(question)
         db.session.commit()
         flash('Question added.')
-        return redirect(url_for('staff'))
-    return render_template('add_question_type1.html',title='Add Multiple Choice Question', form=form)
+        return redirect(url_for('assessment_view', id=assessment_id))
+    return render_template('add_question_type1.html',title='Add Multiple Choice Question', form=form, assessment=assessment)
 
-@app.route("/add_text_question", methods=['GET','POST'])
-def addtextquestion():
+@app.route("/assessment_view/<int:assessment_id>/add_text_question", methods=['GET','POST'])
+def addtextquestion(assessment_id):
+    assessment = Asessment.query.get_or_404(assessment_id)
     form = AddQuestionType2Form()
     if form.validate_on_submit():
-        question2 = QuestionType2(questionType = 2, name = form.name.data, shortDescription = form.shortDescription.data, question = form.question.data, answer = form.answer.data, correctFeedback = form.correctFeedback.data, incorrectFeedback = form.incorrectFeedback.data, marksAwarded = form.marksAwarded.data)
+        question2 = QuestionType2(questionType = 2, name = form.name.data, shortDescription = form.shortDescription.data, question = form.question.data, answer = form.answer.data, correctFeedback = form.correctFeedback.data, incorrectFeedback = form.incorrectFeedback.data, marksAwarded = form.marksAwarded.data, assessmentID=assessment_id)
         db.session.add(question2)
         db.session.commit()
-        return redirect(url_for('staff'))
-    return render_template('addq2.html', title = 'Add Text Question', form=form)
+        return redirect(url_for('assessment_view', id=assessment_id))
+    return render_template('addq2.html', title = 'Add Text Question', form=form, assesment=assessment)
 
-@app.route("/addaquestion")
-def addaquestion():
-    return render_template('questiontype.html')
+@app.route("/assessment_view/<int:assessment_id>/addaquestion")
+def addaquestion(assessment_id):
+    assessment = Asessment.query.get_or_404(assessment_id)
+    return render_template('questiontype.html', assessment=assessment, assessment_id=assessment_id)
 
 @app.route('/temp_question_2_list')
 def question2List():
@@ -64,6 +67,11 @@ def question2List():
 def questionType2(question_id):
     type2Questions = QuestionType2.query.get_or_404(question_id)
     return render_template('question_type_2.html', type2Questions=type2Questions)
+
+@app.route('/question_type_1/<int:question_id>')
+def questionType1(question_id):
+    type1questions = QuestionTypeOne.query.get_or_404(question_id)
+    return render_template('question_type_1.html', type1questions=type1questions)
 
 @app.route('/question_type_2/edit/<int:question_id>', methods=['GET','POST'])
 def edit_question_2(question_id):
@@ -80,7 +88,7 @@ def edit_question_2(question_id):
         db.session.add(type2Questions)
         db.session.commit()
         flash('Successfully updated post')
-        return redirect(url_for('question2List'))
+        return redirect(url_for('assessment_main'))
     form.name.data = type2Questions.name
     form.shortDescription.data = type2Questions.shortDescription
     form.question.data = type2Questions.question
@@ -129,7 +137,7 @@ def edit_type_one_question(id):
         db.session.add(type_one_question)
         db.session.commit()
         flash('Question updated.')
-        return redirect(url_for('home'))
+        return redirect(url_for('assessment_main'))
     form.question.data = type_one_question.question 
     form.answer_options.data = f"{type_one_question.answer_option_1}, {type_one_question.answer_option_2}, {type_one_question.answer_option_3}"
     form.correct_answer.data = type_one_question.correct_answer
@@ -240,6 +248,7 @@ def assessment_main():
 
 @app.route('/assessment_view/<int:id>',methods=["GET","POST"])
 def assessment_view(id):
+    assessment = Asessment.query.get_or_404(id)
     model = Asessment.query.filter_by(id=id).first()
     q_model_1 = QuestionTypeOne.query.all()
     q_model_2 = QuestionType2.query.all()
@@ -253,7 +262,8 @@ def assessment_view(id):
 
     print(questions)
 
-    return render_template("view.html",model=model)
+
+    return render_template("view.html",model=model, assessment=assessment)
 
 @app.route("/assessment_edit/<int:id>",methods=["GET","POST"])
 def assessment_edit(id):
