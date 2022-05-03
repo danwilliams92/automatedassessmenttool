@@ -1,5 +1,6 @@
 {% extends "layout.html" %}
 {% block content %}
+<h1>This is a list of type 2 questions!</h1>
 {% for question in type2Questions %}
     <a href="{{ url_for('questionType2', question_id=question.id) }}"><h2>{{ question.name }} &nbsp</h2></a>
     <p> <a href="{{ url_for('edit_question_2', question_id=question.id) }}">Edit</a> |<a href="{{ url_for('delete_question_type_2', question_id=question.id) }}"> Delete</a></p>
