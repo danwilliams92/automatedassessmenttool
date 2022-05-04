@@ -1,8 +1,0 @@
-{% extends "layout.html" %}
-{% block content %}
-<h1>List of Assessments!</h1>
-	{% for as in ass %}
-	 <p><a href="{{ url_for('assessment_view', id=as.id) }}">{{ as.assessment_title }} {{ as.date_created_on }}</a></p>
-	{% endfor %}
-	<p><a href="{{ url_for('assessment_create') }}">Create an assessment</a></p>
-{% endblock %}
