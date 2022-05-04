@@ -1,10 +1,13 @@
-from flask import Flask, render_template, url_for, redirect, flash, send_file
+from flask import Flask, render_template, url_for, redirect, flash
 from mainApp import app, db
 from mainApp.forms import AddQuestionType1Form, AddQuestionType2Form,AssessmentForm
-from mainApp.forms import AddQuestionType1Form, AddQuestionType2Form, Assesment
-from mainApp.models import QuestionTypeOne, QuestionType2, Mark, Asessment
-from sqlalchemy.sql.expression import func, select
-from openpyxl import load_workbook
+from mainApp.models import QuestionTypeOne, QuestionType2,Asessment,questions
+from flask_wtf import FlaskForm
+from flask_sqlalchemy import SQLAlchemy
+from wtforms_sqlalchemy.fields import QuerySelectField
+
+
+
 
 @app.route("/")
 @app.route("/home")
@@ -20,9 +23,8 @@ def staff():
 def student():
     return render_template('student.html',title='Student')    
 
-@app.route("/assessment_view/<int:assessment_id>/add_question_type1", methods=['POST', 'GET'])
-def add_question_type1(assessment_id):
-    assessment = Asessment.query.get_or_404(assessment_id)
+@app.route("/add_question_type1", methods=['POST', 'GET'])
+def add_question_type1():
     form = AddQuestionType1Form()
     if form.validate_on_submit():
         form_answer_options = form.answer_options.data.split(',')
@@ -35,28 +37,26 @@ def add_question_type1(assessment_id):
         form_question_tag_2 = form_question_tags[1]
         form_question_tag_3 = form_question_tags[2]
 
-        question = QuestionTypeOne(question=form.question.data, answer_option_1=form_answer_option_1, answer_option_2=form_answer_option_2, answer_option_3=form_answer_option_3, correct_answer=form.correct_answer.data, marks_available=form.marks_available.data, question_tag_1=form_question_tag_1, question_tag_2=form_question_tag_2, question_tag_3=form_question_tag_3, correct_answer_feedback=form.correct_answer_feedback.data, incorrect_answer_feedback=form.incorrect_answer_feedback.data, feedforward_comments=form.feedforward_comments.data, assessmentID=assessment_id)
+        question = QuestionTypeOne(question=form.question.data, answer_option_1=form_answer_option_1, answer_option_2=form_answer_option_2, answer_option_3=form_answer_option_3, correct_answer=form.correct_answer.data, marks_available=form.marks_available.data, question_tag_1=form_question_tag_1, question_tag_2=form_question_tag_2, question_tag_3=form_question_tag_3, correct_answer_feedback=form.correct_answer_feedback.data, incorrect_answer_feedback=form.incorrect_answer_feedback.data, feedforward_comments=form.feedforward_comments.data)
         db.session.add(question)
         db.session.commit()
         flash('Question added.')
-        return redirect(url_for('assessment_view', id=assessment_id))
-    return render_template('add_question_type1.html',title='Add Multiple Choice Question', form=form, assessment=assessment)
+        return redirect(url_for('staff'))
+    return render_template('add_question_type1.html',title='Add Multiple Choice Question', form=form)
 
-@app.route("/assessment_view/<int:assessment_id>/add_text_question", methods=['GET','POST'])
-def addtextquestion(assessment_id):
-    assessment = Asessment.query.get_or_404(assessment_id)
+@app.route("/add_text_question", methods=['GET','POST'])
+def addtextquestion():
     form = AddQuestionType2Form()
     if form.validate_on_submit():
-        question2 = QuestionType2(questionType = 2, name = form.name.data, shortDescription = form.shortDescription.data, question = form.question.data, answer = form.answer.data, correctFeedback = form.correctFeedback.data, incorrectFeedback = form.incorrectFeedback.data, marksAwarded = form.marksAwarded.data, assessmentID=assessment_id)
+        question2 = QuestionType2(questionType = 2, name = form.name.data, shortDescription = form.shortDescription.data, question = form.question.data, answer = form.answer.data, correctFeedback = form.correctFeedback.data, incorrectFeedback = form.incorrectFeedback.data, marksAwarded = form.marksAwarded.data)
         db.session.add(question2)
         db.session.commit()
-        return redirect(url_for('assessment_view', id=assessment_id))
-    return render_template('addq2.html', title = 'Add Text Question', form=form, assesment=assessment)
+        return redirect(url_for('staff'))
+    return render_template('addq2.html', title = 'Add Text Question', form=form)
 
-@app.route("/assessment_view/<int:assessment_id>/addaquestion")
-def addaquestion(assessment_id):
-    assessment = Asessment.query.get_or_404(assessment_id)
-    return render_template('questiontype.html', assessment=assessment, assessment_id=assessment_id)
+@app.route("/addaquestion")
+def addaquestion():
+    return render_template('questiontype.html')
 
 @app.route('/temp_question_2_list')
 def question2List():
@@ -67,11 +67,6 @@ def question2List():
 def questionType2(question_id):
     type2Questions = QuestionType2.query.get_or_404(question_id)
     return render_template('question_type_2.html', type2Questions=type2Questions)
-
-@app.route('/question_type_1/<int:question_id>')
-def questionType1(question_id):
-    type1questions = QuestionTypeOne.query.get_or_404(question_id)
-    return render_template('question_type_1.html', type1questions=type1questions)
 
 @app.route('/question_type_2/edit/<int:question_id>', methods=['GET','POST'])
 def edit_question_2(question_id):
@@ -88,7 +83,7 @@ def edit_question_2(question_id):
         db.session.add(type2Questions)
         db.session.commit()
         flash('Successfully updated post')
-        return redirect(url_for('assessment_main'))
+        return redirect(url_for('question2List'))
     form.name.data = type2Questions.name
     form.shortDescription.data = type2Questions.shortDescription
     form.question.data = type2Questions.question
@@ -137,7 +132,7 @@ def edit_type_one_question(id):
         db.session.add(type_one_question)
         db.session.commit()
         flash('Question updated.')
-        return redirect(url_for('assessment_main'))
+        return redirect(url_for('home'))
     form.question.data = type_one_question.question 
     form.answer_options.data = f"{type_one_question.answer_option_1}, {type_one_question.answer_option_2}, {type_one_question.answer_option_3}"
     form.correct_answer.data = type_one_question.correct_answer
@@ -162,67 +157,6 @@ def delete_type_one_question(id):
     return redirect(url_for('home'))
 
 
-@app.route("/assesment/<id>",methods=['GET','POST'])
-def assesment(id):
-  form = Assesment()
-  if id == 0:
-      return redirect('assesment/1')
-  prevID = int(id)-1
-  nextID = int(id)+1
-  nextID = int(id)+1
-  type1questionsass=QuestionTypeOne.query.get(id) #queries questions from QuestionTypeOne for demonstration purposes
-  CorrectFeedback = str(db.session.query(QuestionTypeOne.correct_answer_feedback).filter_by(id=id).first())    
-  IncorrectFeedback = str(db.session.query(QuestionTypeOne.incorrect_answer_feedback).filter_by(id=id).first())
-  correctAnswer = 0 #will be fetched from assesment creation system
-  numberOfQuestions=10 #placeholder    
-  print (nextID)
-  if form.validate_on_submit():   
-      if Assesment.answer == correctAnswer:
-          flash('Question Answered Correctly')
-      elif Assesment.answer == correctAnswer and id == numberOfQuestions:
-          flash('Question Answered Correctly')
-          flash('Feedback:')
-          flash(CorrectFeedback)
-          #db.session.add()#does not work yet
-          #db.session.commit()
-      elif id == numberOfQuestions:
-          flash('Question Answered Incorrectly')
-          #db.session.add()#does not work yet
-          #db.session.commit()
-      else:
-          flash('Question Answered Incorrectly (needs assesment creation model to detect correct answers)')
-          flash('Feedback:')
-          flash(IncorrectFeedback)
-  return render_template('assesment.html', title='Assesment', type1questionsass=type1questionsass, form=form, id=id, nextID=nextID, prevID=prevID, CorrectFeedback=CorrectFeedback, IncorrectFeedback=IncorrectFeedback)
-
-@app.route("/assesmentfinished")
-def feedback():
-    return render_template('feedback.html',title='Feedback')
-
-
-@app.route("/taketest")
-def taketest():
-    return render_template('taketest.html',title='Take Test')
-
-
-@app.route("/review_statistics")
-def review_statistics ():
-    # book1 = load_workbook("data1.xlsx")
-    # sheet = book1.active
-    book2 = load_workbook("data2.xlsx")
-    sheet = book2.active
-    return render_template("review_statistics.html", sheet=sheet)
-
-@app.route("/download1")
-def download_image ():
-    path = "table1.jpg"
-    return send_file(path, as_attachment=True)
-
-@app.route("/download2")
-def download_table ():
-    path = "data2.xlsx"
-    return send_file(path, as_attachment=True)
-
 # assessment
 
 @app.route("/assessment_create", methods=["GET","POST"])
@@ -235,39 +169,57 @@ def assessment_create():
         model = Asessment(assessment_title=title,assessment_difficulty=difficulty,assessment_type=kind)
         db.session.add(model)
         db.session.commit()
-        flash("assessment created successfuly")
-        return redirect(url_for('assessment_main'))
-    return render_template('assessment.html',form=form)
+        flash("assessment created Successfully. Please add the question by clicking one assessment",category="success")
+        return redirect(url_for('assessment_home'))
+    return render_template('assessment_create.html',form=form)
 
 
 
-@app.route("/main",methods=["GET","POST"])
-def assessment_main():
-    ass = Asessment.query.all()
-    return render_template("dash.html",ass=ass)
+
+@app.route("/assessment_home",methods=["GET","POST"])
+def assessment_home():
+    query = Asessment.query.all()
+    return render_template("assessment_home.html",query=query)
+
 
 @app.route('/assessment_view/<int:id>',methods=["GET","POST"])
 def assessment_view(id):
-    assessment = Asessment.query.get_or_404(id)
     model = Asessment.query.filter_by(id=id).first()
-    q_model_1 = QuestionTypeOne.query.all()
-    q_model_2 = QuestionType2.query.all()
-    questions = []
+    return render_template("assessment_view.html",model=model)
 
 
-    if model.assessment_type == 0:
-        questions.append(q_model_1)
-    elif model.assessment_type == 1:
-        questions.append(q_model_2)
-
-    print(questions)
 
 
-    return render_template("view.html",model=model, assessment=assessment)
+
+@app.route('/assessment/question/add/<int:id>/',methods=["GET","POST"])
+def assessment_question_add(id):
+    ass = Asessment.query.filter_by(id=id).first()
+
+    if ass.assessment_type == 0:
+        questions = QuestionTypeOne.query.all()
+    else:
+        questions = QuestionType2.query.all()
+
+
+    return render_template("form.html",questions=questions,ass=id)
+
+
+@app.route('/upload_questiom/<int:id>/<int:ass>')
+def upload_question(id,ass):
+    k = QuestionTypeOne.query.filter_by(id=id).first()
+    i = questions(question=k.question,assessment_id=ass)
+    db.session.add(i)
+    db.session.commit()
+    flash("question add successfull")
+
+    return redirect(url_for('assessment_question_add',id=ass))
+
+
+
+
 
 @app.route("/assessment_edit/<int:id>",methods=["GET","POST"])
 def assessment_edit(id):
-    
     model = Asessment.query.filter_by(id=id).first()
     form = AssessmentForm(obj=model)
     if form.validate_on_submit():
@@ -283,4 +235,9 @@ def assessment_delete(id):
     model = Asessment.query.filter_by(id=id).first()
     db.session.delete(model)
     db.session.commit()
-    return "<h1> Successfully Deleted </h1>"
+    flash("Successfully Deleted")
+    return redirect(url_for('assessment_home'))
+
+
+
+

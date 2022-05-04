@@ -1,7 +1,6 @@
 from flask import Flask
 import os
 from flask_sqlalchemy import SQLAlchemy
-from openpyxl import load_workbook
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 

@@ -1,10 +1,10 @@
 {% extends "layout.html" %}
 {% block content %}
 <h2 id="question_title">{{ type2Questions.name }}&nbsp</h2>
-<p id="question_short_description">Question description: {{ type2Questions.shortDescription }}</p>
-<p id="question">Question: {{ type2Questions.question }}</p>
-<p id="answer">Answer: {{ type2Questions.answer }}</p>
-<p id="question_correct_feedback">Feedback for a correct answer: {{ type2Questions.correctFeedback }}</p>
-<p id="question_incorrect_feedback">Feedback for an incorrect answer: {{ type2Questions.incorrectFeedback }}</p>
-<p id="question_marks_awarded">Marks awarded: {{ type2Questions.marksAwarded }}</p>
+<p id="question_short_description">{{ type2Questions.shortDescription }}</p>
+<p id="question">{{ type2Questions.question }}</p>
+<p id="answer">{{ type2Questions.answer }}</p>
+<p id="question_correct_feedback">{{ type2Questions.correctFeedback }}</p>
+<p id="question_incorrect_feedback">{{ type2Questions.incorrectFeedback }}</p>
+<p id="question_marks_awarded">{{ type2Questions.marksAwarded }}</p>
 {% endblock content %}

@@ -2,6 +2,6 @@
 {% block content %}
 <h1>Add a question!</h1>
 <h2>What type of question do you want to add?</h2>
-<p><a href="{{ url_for ('add_question_type1', assessment_id=assessment_id) }}">Multiple Choice Question</a></p>
-<p><a href="{{ url_for ('addtextquestion', assessment_id=assessment_id) }}">Text Response</a></p>
+<p><a href="{{ url_for ('add_question_type1') }}">Multiple Choice Question</a></p>
+<p><a href="{{ url_for ('addtextquestion') }}">Text Response</a></p>
 {% endblock content %}

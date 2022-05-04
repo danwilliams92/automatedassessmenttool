@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, IntegerField, TextAreaField, RadioField, SelectField
+from wtforms import StringField, SubmitField, IntegerField, TextAreaField,SelectField
 from wtforms.validators import DataRequired, ValidationError
 
 class AddQuestionType1Form(FlaskForm):
@@ -23,16 +23,19 @@ class AddQuestionType2Form(FlaskForm):
   marksAwarded = IntegerField('Please input the points awarded for a correct answer', validators=[DataRequired()])
   submit = SubmitField('Submit question')
 
-class Assesment(FlaskForm):
-  answer = RadioField('Label', choices=[('1','Option 1'),('2','Option  2'), ('3','Option  3')])
-  submit = SubmitField('Submit Answer')
 
 difficulty_choices = [('0','EASY'),('1','MEDIUM'),('2','HARD')]
 assessment_choices = [('0','Summative'),('1','Formative')]
 
 
 class AssessmentForm(FlaskForm):
-  assessment_title = StringField('Assessment Title',validators=[DataRequired()])
-  assessment_type = SelectField('Assessment Type',choices=assessment_choices)
-  assessment_difficulty = SelectField('Difficulty',choices=difficulty_choices)
-  submit = SubmitField('Confirm Assessment')
+  assessment_title = StringField('Assessment Title',validators=[DataRequired()],render_kw={'class':'form-control form-control-lg mb-3'})
+  assessment_type = SelectField('Assessment Type',choices=assessment_choices,render_kw={'class':'form-select form-select-lg mb-3'})
+  assessment_difficulty = SelectField('Difficulty',choices=difficulty_choices,render_kw={'class':'form-select form-select-lg mb-3'})
+  submit = SubmitField('Confirm Assessment',render_kw={'class':'btn btn-primary'})
+
+
+
+
+
+
