@@ -1,11 +1,11 @@
-from flask import Flask, render_template, url_for, redirect, flash
+from flask import Flask, render_template, url_for, redirect, flash, send_file
 from mainApp import app, db
 from mainApp.forms import AddQuestionType1Form, AddQuestionType2Form,AssessmentForm
 from mainApp.models import QuestionTypeOne, QuestionType2,Asessment,questions
 from flask_wtf import FlaskForm
 from flask_sqlalchemy import SQLAlchemy
 from wtforms_sqlalchemy.fields import QuerySelectField
-
+from openpyxl import load_workbook
 
 
 
@@ -239,5 +239,20 @@ def assessment_delete(id):
     return redirect(url_for('assessment_home'))
 
 
+@app.route("/review_statistics")
+def review_statistics ():
+    # book1 = load_workbook("data1.xlsx")
+    # sheet = book1.active
+    book2 = load_workbook("data2.xlsx")
+    sheet = book2.active
+    return render_template("review_statistics.html", sheet=sheet)
 
+@app.route("/download1")
+def download_image ():
+    path = "table1.jpg"
+    return send_file(path, as_attachment=True)
 
+@app.route("/download2")
+def download_table ():
+    path = "data2.xlsx"
+    return send_file(path, as_attachment=True)
